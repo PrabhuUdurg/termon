@@ -42,22 +42,34 @@ function createNewFile() {
             });
 
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch((error) => {
+            if (error.name === "ExitPromptError") {
+                console.log(":(")
+            } else {
+                console.error(error);
+            }
+        })
+
+
 };
 
 
 async function openFile() {
-    const __filenameNew = fileURLToPath(import.meta.url)
-    const __dirnameNew = path.dirname(__filenameNew)
-    const files = fs.readdirSync(__dirnameNew);
+    try {
+        const files = fs.readdirSync(process.cwd());
 
-    const answer = await search({
-        message: 'Choose a file',
-        source: (term) => files,
-    });
-    const vim = spawn('vim', [answer], { stdio: 'inherit' });
+        const answer = await search({
+            message: 'Choose a file',
+            source: (term) => files,
+        });
+        const vim = spawn('vim', [answer], { stdio: 'inherit' });
+    } catch {
+        if (error.name === "ExitPromptError") {
+            console.log(":(")
+        } else {
+            console.error(error);
+        }
+    }
 
 }
 
@@ -77,6 +89,10 @@ inquirer
             openFile();
         }
     })
-    .catch(error => {
-        console.error(error);
-    });
+    .catch((error) => {
+        if (error.name === "ExitPromptError") {
+            console.log(":(")
+        } else {
+            console.error(error);
+        }
+    })
